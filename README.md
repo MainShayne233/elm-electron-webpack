@@ -40,7 +40,7 @@ be using Elm yet.
 First make sure electron is globally installed.
 
 ```
-$ sudo npm install -g electron
+$ npm install -g electron
 ```
 
 Electron has a Main process and a Renderer process. You can think of the Main process as the code that interacts with the 
@@ -152,7 +152,7 @@ Now let's turn this Elm code into javascript.
 First, install elm package using:
 
 ```
-sudo npm install -g elm
+$ npm install -g elm
 ```
 Once installed, issue "elm make" command below that will turn the Elm code into javascript. Elm will also install some packages.
 
@@ -279,7 +279,7 @@ And now configure webpack to use the loader.
 module.exports = {
     entry: './src/static/index.js',
     output: {
-        path: '__dirname'+'/dist',
+        path: __dirname + /dist',
         filename: 'bundle.js'
     },
     module: {
@@ -302,9 +302,9 @@ Under the hood webpack uses *elm make* just like we did above. We could skip usi
 wanted to manually make the elm files every time, but webpack automates it for us now.
 
 
-If you run *webpack* now, you'll see the bundle file get created in /dist, but when you run electron 
-you won't see the "Hello Electron. I'm Elm." text. The reason is because the html file that electron 
-is running is not importing the new bundle.js file. In fact, it's not importing anything. Let's change 
+If you run *webpack* now, you'll see the bundle file get created in /dist, but when you run electron
+you won't see the "Hello Electron. I'm Elm." text. The reason is because the html file that electron
+is running is not importing the new bundle.js file. In fact, it's not importing anything. Let's change
 that.
 
 ```html
@@ -336,7 +336,7 @@ is really just a chrome browser window) every time you save your code?
 Install 
 
 ```
-$ npm install webpack-dev-server
+$ npm install --save-dev webpack-dev-server
 ```
 
 Webpack-dev-server helps us do just that. It creates a node.js express server, and that allows us to watch 
@@ -346,7 +346,7 @@ for files changes and serve. Edit the webpack.config.js file:
 module.exports = {
     entry: './src/static/index.js',
     output: {
-        path: './dist',
+        path: __dirname + '/dist',
         publicPath: '/assets/',
         filename: 'bundle.js'
     },
@@ -355,12 +355,12 @@ module.exports = {
             {
                 test:    /\.elm$/,
                 exclude: [/elm-stuff/, /node_modules/],
-                loader:  'elm-webpack?verbose=true&warn=true',
+                loader:  'elm-webpack-loader?verbose=true&warn=true',
             }
         ]
     },
     resolve: {
-        extensions: ['', '.js', '.elm']
+        extensions: ['.js', '.elm']
     }
 }
 ```
@@ -388,7 +388,7 @@ file on the server rather than in /dist.
 Now run webpack-dev-server
 
 ```
-$ webpack-dev-server --content-base /dist
+$ ./node_modules/.bin/webpack-dev-server --content-base /dist
 ```
 
 This is just telling webpack-dev-server to watch the files in /dist. Open electron again and you will see
@@ -403,7 +403,7 @@ Simply add `devServer: { inline: true }` to your webpack.config.js file.
 module.exports = {
     entry: './src/static/index.js',
     output: {
-        path: './dist',
+        path: __dirname + '/dist',
         publicPath: '/assets/',
         filename: 'bundle.js'
     },
@@ -412,18 +412,18 @@ module.exports = {
             {
                 test:    /\.elm$/,
                 exclude: [/elm-stuff/, /node_modules/],
-                loader:  'elm-webpack?verbose=true&warn=true',
+                loader:  'elm-webpack-loader?verbose=true&warn=true',
             }
         ]
     },
     resolve: {
-        extensions: ['', '.js', '.elm']
+        extensions: ['.js', '.elm']
     },
     devServer: { inline: true }
 }
 ```
 
-And run `webpack-dev-server --content-base /dist` again. Now when you make changes in Main.elm webpack 
+And run `./node_modules/.bin/webpack-dev-server --content-base /dist` again. Now when you make changes in Main.elm webpack
 will recompile everything and refresh the browser.
 
 This is a very good development setup. You may want to explore [hot module replacement](https://webpack.github.io/docs/hot-module-replacement-with-webpack.html#what-is-needed-to-use-it)
